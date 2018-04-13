@@ -24,7 +24,14 @@ const defaultConfig = {
 };
 
 module.exports = (options = {}) => {
-  const config = { ...defaultConfig, ...options };
+  const config = {
+    ...defaultConfig,
+    ...options,
+    messages: {
+      ...defaultConfig.messages,
+      ...options.messages
+    }
+  };
   const asyncHandler = require('./async-handler')(config);
   const authenticate = require('./authenticate')(config);
   const authEnpoints = require('./auth-endpoints')({
