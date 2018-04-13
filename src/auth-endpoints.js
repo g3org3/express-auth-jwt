@@ -35,27 +35,29 @@ module.exports = ({
     return jwt.sign({ public: _id, expire }, secret, {});
   };
 
-  router.post(
-    '/auth/token',
-    asyncHandler(async req => {
+  router.post('/auth/token', asyncHandler(async (req, res) => {
       const { username, password } = req.body;
       const user = await UserFindOne({ username });
       if (!user) {
-        throw new Error(messages.userNotFound);
+        const err = new Error(messages.userNotFound);
+        err.statusCode = 404
+        throw err
       }
       if (user.password !== password) {
-        throw new Error(messages.wrongPassword);
+        const err = new Error(messages.wrongPassword);
+        err.statusCode = 400
+        throw err
       }
 
       delete user.password;
-      const token = generateToken();
+      const token = generateToken(user);
       res.cookie(cookiePropId, token);
 
-      return res.json({
+      return {
         statusCode: 200,
         message: messages.loginSuccess,
         token: token,
-      });
+      }
     }),
   );
   return router;
