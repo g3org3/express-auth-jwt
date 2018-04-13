@@ -7,6 +7,7 @@ module.exports = ({
   cookiePropId,
   timeToExpireSession,
   asyncHandler,
+  UserFindOne,
   messages = {}
 }) => {
   router.get('/auth', (req, res) => res.json({ status: 'up' }));

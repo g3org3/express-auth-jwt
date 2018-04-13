@@ -16,7 +16,7 @@ module.exports = ({ pkg = {}, pe = {} }) => {
   return asyncHandler => (req, res) => {
     asyncHandler(req, res)
       .then((response = {}) =>
-        res.status(response.statusCode || 200).json(response),
+        res.status(response.statusCode || 200).json(response)
       )
       .catch(err => {
         logError(err);

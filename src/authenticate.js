@@ -5,8 +5,8 @@ const verify = ({ token, secret }) =>
     jwt.verify(
       token,
       secret,
-      (err, decoded) => (err ? reject(err) : resolve(decoded)),
-    ),
+      (err, decoded) => (err ? reject(err) : resolve(decoded))
+    )
   );
 
 const jwtDBAuth = async ({ UserFindOne, token, secret, messages }) => {
