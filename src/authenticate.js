@@ -9,7 +9,7 @@ const verify = ({ token, secret }) =>
     )
   );
 
-const jwtDBAuth = async ({ UserFindOne, token, secret, messages }) => {
+const jwtDBAuth = async ({ UserFindOne, token, secret, messages, userIdField }) => {
   // verifies secret and checks exp
   const decoded = await verify({ token, secret });
   const today = Date.now();
@@ -21,8 +21,8 @@ const jwtDBAuth = async ({ UserFindOne, token, secret, messages }) => {
     throw err;
   }
 
-  const { _id } = decoded.public;
-  const user = await UserFindOne({ _id });
+  const _id = decoded.public;
+  const user = await UserFindOne({ [userIdField]: _id });
   if (!user) {
     const err = new Error(messages.userNotFound);
     err.statusCode = 404;
@@ -50,13 +50,14 @@ const authenticateRoute = ({
   UserFindOne,
   cookiePropId = '_id',
   messages = {},
+  userIdField = '_id'
 }) => (req, res, next) => {
   const token = getToken(req, cookiePropId);
   if (!token) {
     res.status(403);
     res.json(messages.tokenNotFound);
   } else {
-    jwtDBAuth({ secret, UserFindOne, token, messages })
+    jwtDBAuth({ secret, UserFindOne, token, messages, userIdField })
       .then(user => {
         req.user = user;
         next();

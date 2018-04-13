@@ -19,7 +19,8 @@ const defaultConfig = {
     wrongPassword: 'Contraseña no es valida',
     loginSucess: 'Enjoy your token!',
     logout: 'logout'
-  }
+  },
+  userIdField: '_id'
 };
 
 module.exports = (options = {}) => {

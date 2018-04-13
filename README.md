@@ -36,6 +36,7 @@ const exampleConfig = {
       username: "admin",
       password: "admin"
     }),
+  userIdField: "_id",
   messages: {
     tokenNotFound: "No token provided.",
     tokenExpired: "La sesion ha expirado.",
