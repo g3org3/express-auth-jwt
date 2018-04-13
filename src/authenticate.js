@@ -1,18 +1,5 @@
 const jwt = require('jsonwebtoken');
-const errorMessages = {
-  noTokenFound: {
-    error: true,
-    message: 'No token provided.',
-  },
-  expired: {
-    error: true,
-    message: 'No se pudo autenticar la sesion.',
-  },
-  failed: {
-    error: true,
-    message: 'Failed to authenticate',
-  },
-};
+
 const verify = ({ token, secret }) =>
   new Promise((resolve, reject) =>
     jwt.verify(
@@ -22,14 +9,14 @@ const verify = ({ token, secret }) =>
     ),
   );
 
-const jwtDBAuth = async ({ UserFindOne, token, secret }) => {
+const jwtDBAuth = async ({ UserFindOne, token, secret, messages }) => {
   // verifies secret and checks exp
   const decoded = await verify({ token, secret });
   const today = Date.now();
   const timeLeft = decoded.expire - today;
 
   if (timeLeft <= 0) {
-    const err = new Error(errorMessages.expired);
+    const err = new Error(messages.tokenExpired);
     err.statusCode = 403;
     throw err;
   }
@@ -37,7 +24,7 @@ const jwtDBAuth = async ({ UserFindOne, token, secret }) => {
   const { _id } = decoded.public;
   const user = await UserFindOne({ _id });
   if (!user) {
-    const err = new Error(errorMessages.failed);
+    const err = new Error(messages.userNotFound);
     err.statusCode = 404;
     throw err;
   }
@@ -58,17 +45,18 @@ const getToken = (req = {}, cookiePropId) => {
   return token;
 };
 
-const authenticateRoute = ({ secret, UserFindOne, cookiePropId = '_id' }) => (
-  req,
-  res,
-  next,
-) => {
+const authenticateRoute = ({
+  secret = 'secret',
+  UserFindOne,
+  cookiePropId = '_id',
+  messages = {},
+}) => (req, res, next) => {
   const token = getToken(req, cookiePropId);
   if (!token) {
     res.status(403);
-    res.json(errorMessages.noTokenFound);
+    res.json(messages.tokenNotFound);
   } else {
-    jwtDBAuth({ secret, UserFindOne, token })
+    jwtDBAuth({ secret, UserFindOne, token, messages })
       .then(user => {
         req.user = user;
         next();

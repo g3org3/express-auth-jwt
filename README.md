@@ -23,39 +23,40 @@ npm install express-jwt-util
 * George <mailto:7jagjag@gmail.com>
 
 ```js
+const exampleConfig = {
+  pkg: null, // package.json
+  pe: null, // pretty-error
+  secret: "change this secret",
+  cookiePropId: "_id",
+  // ---------------- hr | min | sec | mili
+  timeToExpireSession: 1 * 60 * 60 * 1000,
+  UserFindOne: () =>
+    Promise.resolve({
+      _id: "95fec9bf-5baa-4ccf-aa3b-c0cfea46bdff",
+      username: "admin",
+      password: "admin"
+    }),
+  messages: {
+    tokenNotFound: "No token provided.",
+    tokenExpired: "La sesion ha expirado.",
+    failToAuthenticate: "No se pudo autenticar la sesion",
+    userNotFound: "El usuario no es valido.",
+    wrongPassword: "Contraseña no es valida",
+    loginSucess: "Enjoy your token!",
+    logout: "logout"
+  }
+};
+
 const {
   asyncHandler,
-  authenticateConf,
-  authEnpointsConf
-} = require("express-jwt-util");
-
-// config
-const secret = "secret";
-const UserFindOne = () =>
-  Promise.resolve({
-    _id: "95fec9bf-5baa-4ccf-aa3b-c0cfea46bdff",
-    username: "admin",
-    password: "admin"
-  });
+  authenticate,
+  authEnpoints
+} = require("express-jwt-util")(config);
 
 // DEPS
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const session = require("cookie-session");
-
-// TOOLS
-const authenticate = authenticateConf({
-  UserFindOne,
-  secret
-});
-const authEnpoints = authEnpointsConf({
-  router: express.Router(),
-  secret,
-  authenticate,
-  cookiePropId: "_id",
-  // ---------------- hr | min | sec | mili
-  timeToExpireSession: 1 * 60 * 60 * 1000
-});
 
 // CONFIG
 // app.use(bodyParser.urlencoded({ extended: false }))

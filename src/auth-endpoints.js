@@ -1,16 +1,13 @@
 const jwt = require('jsonwebtoken');
-const asyncHandler = require('./async-handler');
-const defaultMessages = {
-  userNotValid: 'Usuario no valido.',
-  wrongPassword: 'Contraseña no es valida.',
-};
+const router = require('express').Router()
 
 module.exports = ({
-  router,
   authenticate,
   secret,
   cookiePropId,
   timeToExpireSession,
+  asyncHandler,
+  messages = {}
 }) => {
   router.get('/auth', (req, res) => res.json({ status: 'up' }));
   router.get('/auth/me', authenticate, (req, res) => {
@@ -21,7 +18,7 @@ module.exports = ({
     res.cookie(cookiePropId, '', { maxAge: 0 });
     res.json({
       statusCode: 200,
-      message: 'logout',
+      message: messages.logout,
     });
   });
 
@@ -30,7 +27,7 @@ module.exports = ({
     res.json(req.query.token);
   });
 
-  const generateTokenHandler = user => {
+  const generateToken = user => {
     const today = Date.now();
     const expire = today + timeToExpireSession;
     const { _id } = user;
@@ -43,19 +40,19 @@ module.exports = ({
       const { username, password } = req.body;
       const user = await UserFindOne({ username });
       if (!user) {
-        throw new Error(defaultMessages.userNotValid);
+        throw new Error(messages.userNotFound);
       }
       if (user.password !== password) {
-        throw new Error(defaultMessages.wrongPassword);
+        throw new Error(messages.wrongPassword);
       }
 
       delete user.password;
-      const token = generateTokenHandler();
+      const token = generateToken();
       res.cookie(cookiePropId, token);
 
       return res.json({
         statusCode: 200,
-        message: 'Enjoy your token!',
+        message: messages.loginSuccess,
         token: token,
       });
     }),

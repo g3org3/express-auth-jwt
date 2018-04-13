@@ -1,7 +1,9 @@
 module.exports = ({ pkg = {}, pe = {} }) => {
   if (pe && pe.skipNodeFiles && pe.skipPackage) {
     pe.skipNodeFiles();
-    pe.skipPackage(...Object.keys(pkg.dependencies));
+    if (pkg && pkg.dependencies) {
+      pe.skipPackage(...Object.keys(pkg.dependencies));
+    }
   }
   const logError = err => {
     if (pe && pe.render) {
