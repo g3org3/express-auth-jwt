@@ -8,6 +8,7 @@ module.exports = ({
   timeToExpireSession,
   asyncHandler,
   UserFindOne,
+  findQuery,
   messages = {}
 }) => {
   router.get('/auth', (req, res) => res.json({ status: 'up' }));
@@ -36,8 +37,11 @@ module.exports = ({
   };
 
   router.post('/auth/token', asyncHandler(async (req, res) => {
-      const { username, password } = req.body;
-      const user = await UserFindOne({ username });
+      const { password } = req.body;
+      const query = Object.keys(req.body)
+        .filter(field => findQuery[field])
+        .reduce((_q, key) => ({ ..._q, [key]: req.body[key] }), {})
+      const user = await UserFindOne(query);
       if (!user) {
         const err = new Error(messages.userNotFound);
         err.statusCode = 404

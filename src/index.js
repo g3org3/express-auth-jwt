@@ -11,6 +11,7 @@ const defaultConfig = {
         'Function UserFindOne, not specified in the express-jwt-util(config)'
       )
     ),
+  findQuery: { username: true },
   messages: {
     tokenNotFound: 'No token provided.',
     tokenExpired: 'La sesion ha expirado.',
