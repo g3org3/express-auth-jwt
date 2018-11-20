@@ -61,7 +61,9 @@ const config = {
 
 // Using the module
 const { authEndpoints, authenticate } = expressAuthJWT(config);
-app.use(authEnpoints);
+
+app.use(authEndpoints);
+
 app.get("/secret/route", authenticate, (req, res) =>
   res.json("this is private")
 );

@@ -48,12 +48,12 @@ module.exports = (options = {}) => {
     }
   };
   const authenticate = require('./authenticate')(config);
-  const authEnpoints = require('./auth-endpoints')({
+  const authEndpoints = require('./auth-endpoints')({
     ...config,
     authenticate,
   });
   return {
     authenticate,
-    authEnpoints
+    authEndpoints
   };
 };
