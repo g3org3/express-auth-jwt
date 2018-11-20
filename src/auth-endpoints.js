@@ -30,17 +30,16 @@ module.exports = ({ database, jwt, session, messages, authenticate }) => {
     return _jwt.sign({ public: _id, expire }, jwt.secret, {});
   };
 
-  router.post('/auth/token', asyncHandler(async (req, res) => {
-      const { password } = req.body;
-      
-      // create the object query -> { _id: 1234 }
-      const query = Object.keys(req.body)
-        .filter(field => database.findQuery[field])
-        .reduce((_q, key) => ({ ..._q, [key]: req.body[key] }), {})
-      
-      // Search in the DB
-      const user = await database.getUser(query);
-      
+  router.post('/auth/token', (req, res) => {
+    const { password } = req.body;
+    
+    // create the object query -> { _id: 1234 }
+    const query = Object.keys(req.body)
+      .filter(field => database.findQuery[field])
+      .reduce((_q, key) => ({ ..._q, [key]: req.body[key] }), {})
+    
+    // Search in the DB
+    database.getUser(query).then(user => {
       if (!user) {
         const err = new Error(messages.userNotFound);
         err.statusCode = 404
@@ -49,7 +48,7 @@ module.exports = ({ database, jwt, session, messages, authenticate }) => {
 
       if (!database.comparePasswords(user.password, password)) {
         const err = new Error(messages.wrongPassword);
-        err.statusCode = 400
+        err.statusCode = 403
         throw err
       }
 
@@ -58,12 +57,18 @@ module.exports = ({ database, jwt, session, messages, authenticate }) => {
       const token = generateToken(user);
       res.cookie(session.cookiePropId, token);
 
-      return {
+      res.json({
         statusCode: 200,
         message: messages.loginSuccess,
         token,
-      }
-    }),
-  );
+      });
+    }).catch(err => {
+      const statusCode = err.statusCode || 500
+      if (statusCode === 500)
+        console.log('express-auth-jwt: [error]' , err)
+      res.status(statusCode);
+      res.json({ statusCode: statusCode, message: err.message })
+    })
+  })
   return router;
 };
