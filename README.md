@@ -1,4 +1,4 @@
-# express-jwt-util
+# express-auth-jwt 🚓
 
 # a node module
 
@@ -10,7 +10,7 @@ You will need Node >= 7 installed. [How do I install node? click here to find ou
 
 ```sh
 # install module
-npm install express-jwt-util
+npm install express-auth-jwt
 
 # install deps
 npm install jsonwebtoken body-parser cookie-parser cookie-session
@@ -23,15 +23,14 @@ npm install jsonwebtoken body-parser cookie-parser cookie-session
 ## Example
 
 ```js
-const expressJWTUtil = require("express-jwt-util");
+const expressAuthJWT = require("express-auth-jwt");
 
-// DEPS
+// Dependencies
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const session = require("cookie-session");
 
-// CONFIG
-// app.use(bodyParser.urlencoded({ extended: false }))
+// Setup
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(
@@ -59,7 +58,9 @@ const config = {
     })
   }
 };
-const { authEndpoints, authenticate } = expressJWTUtil(config);
+
+// Using the module
+const { authEndpoints, authenticate } = expressAuthJWT(config);
 app.use(authEnpoints);
 app.get("/secret/route", authenticate, (req, res) =>
   res.json("this is private")
@@ -74,7 +75,7 @@ const defaultConfig = {
     getUser: () =>
       Promise.reject(
         new Error(
-          "Function UserFindOne, not specified in the express-jwt-util(config)"
+          "Function getUser, not specified in the express-auth-jwt(config)"
         )
       ),
     findQuery: { username: true },
