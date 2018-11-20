@@ -16,6 +16,7 @@
     "deploy-init": "gg-scripts deploy-init",
     "deploy": "gg-scripts deploy"
   },
+  "repository": "https://github.com/g3org3/express-auth-jwt",
   "keywords": [],
   "author": "George <7jagjag@gmail.com>",
   "license": "MIT",
