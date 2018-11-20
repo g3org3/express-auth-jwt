@@ -9,50 +9,21 @@ You will need Node >= 7 installed. [How do I install node? click here to find ou
 ### Installation
 
 ```sh
+# install module
 npm install express-jwt-util
-```
 
-# Usage
-
-```sh
-
+# install deps
+npm install jsonwebtoken body-parser cookie-parser cookie-session
 ```
 
 ## Contributors
 
-* George <mailto:7jagjag@gmail.com>
+- George <mailto:7jagjag@gmail.com>
+
+## Example
 
 ```js
-const exampleConfig = {
-  pkg: null, // package.json
-  pe: null, // pretty-error
-  secret: "change this secret",
-  cookiePropId: "_id",
-  // ---------------- hr | min | sec | mili
-  timeToExpireSession: 1 * 60 * 60 * 1000,
-  UserFindOne: () =>
-    Promise.resolve({
-      _id: "95fec9bf-5baa-4ccf-aa3b-c0cfea46bdff",
-      username: "admin",
-      password: "admin"
-    }),
-  userIdField: "_id",
-  messages: {
-    tokenNotFound: "No token provided.",
-    tokenExpired: "La sesion ha expirado.",
-    failToAuthenticate: "No se pudo autenticar la sesion",
-    userNotFound: "El usuario no es valido.",
-    wrongPassword: "Contraseña no es valida",
-    loginSucess: "Enjoy your token!",
-    logout: "logout"
-  }
-};
-
-const {
-  asyncHandler,
-  authenticate,
-  authEnpoints
-} = require("express-jwt-util")(config);
+const expressJWTUtil = require("express-jwt-util");
 
 // DEPS
 const bodyParser = require("body-parser");
@@ -78,5 +49,55 @@ app.use((req, res, next) => {
   req.jsonResponse = req.headers.accept === "application/json";
   next();
 });
+const config = {
+  database: {
+    getUser: Promise.resolve({
+      _id: "95fec9bf-5baa-4ccf-aa3b-c0cfea46bdff",
+      username: "admin",
+      password: "admin",
+      name: "admin"
+    })
+  }
+};
+const { authEndpoints, authenticate } = expressJWTUtil(config);
 app.use(authEnpoints);
+app.get("/secret/route", authenticate, (req, res) =>
+  res.json("this is private")
+);
+```
+
+## Default Config
+
+```js
+const defaultConfig = {
+  database: {
+    getUser: () =>
+      Promise.reject(
+        new Error(
+          "Function UserFindOne, not specified in the express-jwt-util(config)"
+        )
+      ),
+    findQuery: { username: true },
+    userIdField: "_id",
+    comparePasswords: (dbPassword, requestPassword) =>
+      dbPassword === requestPassword
+  },
+  jwt: {
+    secret: "sekret"
+  },
+  session: {
+    cookiePropId: "_id",
+    // ---------------- hr | min | sec | mili
+    timeToExpireSession: 1 * 60 * 60 * 1000
+  },
+  messages: {
+    tokenNotFound: "No token provided.",
+    tokenExpired: "The session has expired.",
+    failToAuthenticate: "Could not authenticate.",
+    userNotFound: "The user is not valid.",
+    wrongPassword: "The password is incorrect.",
+    loginSucess: "Enjoy your token!",
+    logout: "logout"
+  }
+};
 ```

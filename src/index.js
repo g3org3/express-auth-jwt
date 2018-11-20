@@ -26,7 +26,6 @@ const defaultConfig = {
     loginSucess: 'Enjoy your token!',
     logout: 'logout'
   },
-  
 };
 
 module.exports = (options = {}) => {
