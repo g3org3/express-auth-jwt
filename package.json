@@ -1,7 +1,7 @@
 {
-  "name": "express-jwt-util",
+  "name": "express-auth-jwt",
   "version": "1.3.0",
-  "description": "",
+  "description": "authentication helper for express using JWT and sessions",
   "main": "src/index.js",
   "scripts": {
     "test": "gg-scripts test",

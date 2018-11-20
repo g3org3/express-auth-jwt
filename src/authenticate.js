@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const verify = ({ token, secret }) =>
+const verifyJWTPromise = ({ token, secret }) =>
   new Promise((resolve, reject) =>
     jwt.verify(
       token,
@@ -9,9 +9,9 @@ const verify = ({ token, secret }) =>
     )
   );
 
-const jwtDBAuth = async ({ UserFindOne, token, secret, messages, userIdField }) => {
+const authenticateToken = async ({ token, database, messages }) => {
   // verifies secret and checks exp
-  const decoded = await verify({ token, secret });
+  const decoded = await verifyJWTPromise({ token, secret });
   const today = Date.now();
   const timeLeft = decoded.expire - today;
 
@@ -21,19 +21,22 @@ const jwtDBAuth = async ({ UserFindOne, token, secret, messages, userIdField }) 
     throw err;
   }
 
-  const _id = decoded.public;
-  const user = await UserFindOne({ [userIdField]: _id });
+  return decoded.public;
+};
+
+const getUser = async ({ database, messages, _id }) => {
+  const user = await database.getUser({ [database.userIdField]: _id });
   if (!user) {
     const err = new Error(messages.userNotFound);
     err.statusCode = 404;
     throw err;
   }
+  // TODO: Make this optional
   user.password = undefined;
-  user.__v = undefined;
   return user;
-};
+}
 
-const getToken = (req = {}, cookiePropId) => {
+const getToken = (req = {}, cookiePropId = '') => {
   var body = req.body || {};
   var query = req.query || {};
   var cookies = req.cookies || {};
@@ -45,19 +48,15 @@ const getToken = (req = {}, cookiePropId) => {
   return token;
 };
 
-const authenticateRoute = ({
-  secret = 'secret',
-  UserFindOne,
-  cookiePropId = '_id',
-  messages = {},
-  userIdField = '_id'
-}) => (req, res, next) => {
-  const token = getToken(req, cookiePropId);
+const authenticateRoute = ({ session, database, messages }) => (req, res, next) => {
+  const token = getToken(req, session.cookiePropId);
   if (!token) {
     res.status(403);
     res.json(messages.tokenNotFound);
   } else {
-    jwtDBAuth({ secret, UserFindOne, token, messages, userIdField })
+    Promise.resolve()
+      .then(() => authenticateToken({ secret, UserFindOne, token, messages, userIdField }))
+      .then(_id => getUser({ database, messages, _id }))
       .then(user => {
         req.user = user;
         next();
@@ -66,7 +65,7 @@ const authenticateRoute = ({
         const message = err.message;
         const statusCode = err.statusCode || 500;
         res.status(statusCode);
-        res.json({ statusCode, message: err.message });
+        res.json({ statusCode, message: message });
       });
   }
 };
