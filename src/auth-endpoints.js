@@ -1,7 +1,7 @@
 const _jwt = require('jsonwebtoken');
 const router = require('express').Router()
 
-module.exports = ({ database, jwt, session, messages, authenticate }) => {
+module.exports = ({ database, jwt, cookie, messages, authenticate }) => {
   // TODO: add optional prefix
   router.get('/auth', (req, res) => res.json({ status: 'up' }));
 
@@ -11,7 +11,7 @@ module.exports = ({ database, jwt, session, messages, authenticate }) => {
   });
 
   router.get('/auth/logout', (req, res) => {
-    res.cookie(session.cookiePropId, '', { maxAge: 0 });
+    res.cookie(cookie.name, '', { maxAge: 0 });
     res.json({
       statusCode: 200,
       message: messages.logout,
@@ -19,13 +19,13 @@ module.exports = ({ database, jwt, session, messages, authenticate }) => {
   });
 
   router.get('/auth/login', authenticate, (req, res) => {
-    res.cookie(session.cookiePropId, req.query.token);
+    res.cookie(cookie.name, req.query.token);
     res.json(req.query.token);
   });
 
   const generateToken = user => {
     const today = Date.now();
-    const expire = today + session.timeToExpireSession;
+    const expire = today + jwt.timeToExpire;
     const _id = user[database.userIdField];
     return _jwt.sign({ public: _id, expire }, jwt.secret, {});
   };
@@ -55,7 +55,7 @@ module.exports = ({ database, jwt, session, messages, authenticate }) => {
       // TODO: optinal? or custom name?
       delete user.password;
       const token = generateToken(user);
-      res.cookie(session.cookiePropId, token);
+      res.cookie(cookie.name, token);
 
       res.json({
         statusCode: 200,

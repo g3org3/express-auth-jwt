@@ -36,7 +36,7 @@ const getUser = async ({ database, messages, _id }) => {
   return user;
 }
 
-const getToken = (req = {}, cookiePropId = '') => {
+const getToken = (req = {}, cookie) => {
   var body = req.body || {};
   var query = req.query || {};
   var cookies = req.cookies || {};
@@ -44,12 +44,12 @@ const getToken = (req = {}, cookiePropId = '') => {
     body.token ||
     query.token ||
     req.headers['x-access-token'] ||
-    cookies[cookiePropId];
+    cookies[cookie.name];
   return token;
 };
 
-const authenticateRoute = ({ session, database, messages }) => (req, res, next) => {
-  const token = getToken(req, session.cookiePropId);
+const authenticateRoute = ({ cookie, database, messages }) => (req, res, next) => {
+  const token = getToken(req, cookie);
   if (!token) {
     res.status(403);
     res.json(messages.tokenNotFound);

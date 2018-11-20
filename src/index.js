@@ -10,12 +10,21 @@ const defaultConfig = {
     comparePasswords: (dbPassword, requestPassword) => dbPassword === requestPassword
   },
   jwt: {
-    secret: 'sekret'
+    secret: 'sekret',
+    // ---------------- hr | min | sec | mili
+    timeToExpire: 1 * 60 * 60 * 1000
+  },
+  cookie: {
+    name: 'EAU_cid'
   },
   session: {
-    cookiePropId: '_id',
-    // ---------------- hr | min | sec | mili
-    timeToExpireSession: 1 * 60 * 60 * 1000,
+    resave: false,
+    secret: "keyboard cat",
+    saveUninitialized: true,
+    cookie: {
+      httpOnly: true,
+      maxAge: 3600
+    }
   },
   messages: {
     tokenNotFound: 'No token provided.',
@@ -38,6 +47,10 @@ module.exports = (options = {}) => {
       ...defaultConfig.session,
       ...options.session
     },
+    cookie: {
+      ...defaultConfig.cookie,
+      ...options.cookie
+    },
     jwt: {
       ...defaultConfig.jwt,
       ...options.jwt
@@ -54,6 +67,33 @@ module.exports = (options = {}) => {
   });
   return {
     authenticate,
-    authEndpoints
+    authEndpoints,
+    setupExpressDependencies: setupExpressDependencies(config),
+    setupExpress: setupExpressDependencies(config, authEndpoints)
   };
 };
+
+function setupExpressDependencies (config, authEndpoints) {
+  return (app) => {
+    const bodyParser = require("body-parser");
+    const cookieParser = require("cookie-parser");
+    const session = require("cookie-session");
+    
+    app.use(bodyParser.json());
+    app.use(cookieParser());
+    app.use(
+      session({
+        ...config.session,
+        cookie: {
+          ...config.session.cookie,
+        }
+      })
+    );
+    app.use((req, res, next) => {
+      req.jsonResponse = req.headers.accept === "application/json";
+      next();
+    });
+
+    if (authEndpoints) app.use(authEndpoints);
+  }
+}

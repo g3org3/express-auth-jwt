@@ -14,6 +14,9 @@ npm install express-auth-jwt
 
 # install deps
 npm install jsonwebtoken body-parser cookie-parser cookie-session
+
+# all
+npm install express-auth-jwt jsonwebtoken body-parser cookie-parser cookie-session
 ```
 
 ## Contributors
@@ -23,12 +26,10 @@ npm install jsonwebtoken body-parser cookie-parser cookie-session
 ## Example
 
 ```js
-const expressAuthJWT = require("express-auth-jwt");
-
-// Dependencies
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const session = require("cookie-session");
+const expressAuthJWT = require("express-auth-jwt");
 
 // Setup
 app.use(bodyParser.json());
@@ -103,4 +104,24 @@ const defaultConfig = {
     logout: "logout"
   }
 };
+```
+
+## Auth Routes
+
+- `GET` /auth
+- `GET` /auth/me
+- `GET` /auth/logout
+- `GET` /auth/login?token=JWT
+- `POST` /auth/token `{ _id, password }`
+
+```js
+// if you want to use email or username
+// you need to modify on the initial config
+const config = {
+  database: {
+    userIdField: ‘email’
+  }
+}
+
+......expressAuthJWT(config)
 ```

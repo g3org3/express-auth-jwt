@@ -16,11 +16,19 @@
     "deploy-init": "gg-scripts deploy-init",
     "deploy": "gg-scripts deploy"
   },
+  "files": [
+    "src"
+  ],
   "repository": "https://github.com/g3org3/express-auth-jwt",
   "keywords": [],
   "author": "George <7jagjag@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "gg-scripts": "^0.3.2"
+    "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.3",
+    "cookie-session": "^2.0.0-beta.3",
+    "express": "^4.16.4",
+    "gg-scripts": "^0.3.2",
+    "jsonwebtoken": "^8.4.0"
   }
 }
