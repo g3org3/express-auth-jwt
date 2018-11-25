@@ -4,17 +4,8 @@
   "description": "authentication helper for express using JWT and sessions",
   "main": "src/index.js",
   "scripts": {
-    "test": "gg-scripts test",
-    "start": "node src/index.js",
-    "test:w": "gg-scripts test:w",
-    "lint": "gg-scripts lint",
-    "format": "gg-scripts format",
-    "coverage": "gg-scripts coverage",
-    "build": "gg-scripts docker-build",
-    "up": "gg-scripts docker-run",
-    "stop": "gg-scripts docker-stop",
-    "deploy-init": "gg-scripts deploy-init",
-    "deploy": "gg-scripts deploy"
+    "test": "jest",
+    "lint": "eslint ."
   },
   "files": [
     "src"
@@ -27,8 +18,14 @@
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.3",
     "cookie-session": "^2.0.0-beta.3",
+    "eslint": "^5.9.0",
+    "eslint-config-prettier": "^3.3.0",
+    "eslint-plugin-prettier": "^3.0.0",
     "express": "^4.16.4",
     "gg-scripts": "^0.3.2",
-    "jsonwebtoken": "^8.4.0"
+    "jest": "^23.6.0",
+    "jsonwebtoken": "^8.4.0",
+    "node-fetch": "^2.3.0",
+    "prettier": "^1.15.2"
   }
 }
