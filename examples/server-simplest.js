@@ -31,7 +31,4 @@ app.get('/secret/route', authenticate, (req, res) => res.json('this is private')
 // const server = app.listen(port, () =>
 //   console.log(`Example app listening on port ${port}!`))
 
-module.exports = _port => {
-  // if (!_port) throw new Error('Please provide a port >server-simplest(3002)<');
-  return app.listen(_port);
-};
+module.exports = _port => app.listen(_port);
