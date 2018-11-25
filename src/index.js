@@ -1,30 +1,29 @@
 const defaultConfig = {
   database: {
-    getUser: () => Promise.reject(
-      new Error(
-        'Function UserFindOne, not specified in the express-jwt-util(config)'
-      )
-    ),
+    getUser: () =>
+      Promise.reject(
+        new Error('Function UserFindOne, not specified in the express-jwt-util(config)')
+      ),
     findQuery: { username: true },
     userIdField: '_id',
-    comparePasswords: (dbPassword, requestPassword) => dbPassword === requestPassword
+    comparePasswords: (dbPassword, requestPassword) => dbPassword === requestPassword,
   },
   jwt: {
     secret: 'sekret',
     // ---------------- hr | min | sec | mili
-    timeToExpire: 1 * 60 * 60 * 1000
+    timeToExpire: 1 * 60 * 60 * 1000,
   },
   cookie: {
-    name: 'EAU_cid'
+    name: 'EAU_cid',
   },
   session: {
     resave: false,
-    secret: "keyboard cat",
+    secret: 'keyboard cat',
     saveUninitialized: true,
     cookie: {
       httpOnly: true,
-      maxAge: 3600
-    }
+      maxAge: 3600,
+    },
   },
   messages: {
     tokenNotFound: 'No token provided.',
@@ -33,7 +32,7 @@ const defaultConfig = {
     userNotFound: 'The user is not valid.',
     wrongPassword: 'The password is incorrect.',
     loginSucess: 'Enjoy your token!',
-    logout: 'logout'
+    logout: 'logout',
   },
 };
 
@@ -41,24 +40,24 @@ module.exports = (options = {}) => {
   const config = {
     database: {
       ...defaultConfig.database,
-      ...options.database
+      ...options.database,
     },
     session: {
       ...defaultConfig.session,
-      ...options.session
+      ...options.session,
     },
     cookie: {
       ...defaultConfig.cookie,
-      ...options.cookie
+      ...options.cookie,
     },
     jwt: {
       ...defaultConfig.jwt,
-      ...options.jwt
+      ...options.jwt,
     },
     messages: {
       ...defaultConfig.messages,
-      ...options.messages
-    }
+      ...options.messages,
+    },
   };
   const authenticate = require('./authenticate')(config);
   const authEndpoints = require('./auth-endpoints')({
@@ -69,16 +68,16 @@ module.exports = (options = {}) => {
     authenticate,
     authEndpoints,
     setupExpressDependencies: setupExpressDependencies(config),
-    setupExpress: setupExpressDependencies(config, authEndpoints)
+    setupExpress: setupExpressDependencies(config, authEndpoints),
   };
 };
 
-function setupExpressDependencies (config, authEndpoints) {
-  return (app) => {
-    const bodyParser = require("body-parser");
-    const cookieParser = require("cookie-parser");
-    const session = require("cookie-session");
-    
+function setupExpressDependencies(config, authEndpoints) {
+  return app => {
+    const bodyParser = require('body-parser');
+    const cookieParser = require('cookie-parser');
+    const session = require('cookie-session');
+
     app.use(bodyParser.json());
     app.use(cookieParser());
     app.use(
@@ -86,14 +85,14 @@ function setupExpressDependencies (config, authEndpoints) {
         ...config.session,
         cookie: {
           ...config.session.cookie,
-        }
+        },
       })
     );
     app.use((req, res, next) => {
-      req.jsonResponse = req.headers.accept === "application/json";
+      req.jsonResponse = req.headers.accept === 'application/json';
       next();
     });
 
     if (authEndpoints) app.use(authEndpoints);
-  }
+  };
 }
