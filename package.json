@@ -1,6 +1,6 @@
 {
   "name": "express-auth-jwt",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "authentication helper for express using JWT and sessions",
   "main": "src/index.js",
   "scripts": {
