@@ -27,12 +27,14 @@ npm install express-auth-jwt jsonwebtoken body-parser cookie-parser cookie-sessi
 
 ## Generated Routes
 
-- `GET` /auth
-- `GET` /auth/me
-- `GET` /auth/logout
-- `GET` /auth/login?token=JWT
-- `POST` /auth/token `{ _id, password }`
+- `GET /auth`
+- `GET /auth/me`
+- `GET /auth/logout`
+- `GET /auth/login?token=JWT`
+- `POST /auth/token `
+  - body: ` { _id, password } `
 
+## FAQs
 ```js
 // if you want to use email or username
 // you need to modify on the initial config
