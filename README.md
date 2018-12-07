@@ -1,4 +1,4 @@
-# express-auth-jwt 🚓🍪
+# 🚓🍪 express-auth-jwt
 
 ## Getting Started
 
