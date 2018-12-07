@@ -1,7 +1,5 @@
 # express-auth-jwt 🚓
 
-# a node module
-
 ## Getting Started
 
 You will need Node >= 7 installed. [How do I install node? click here to find out about nvm](https://github.com/creationix/nvm#installation)
@@ -27,7 +25,7 @@ npm install express-auth-jwt jsonwebtoken body-parser cookie-parser cookie-sessi
 [see examples][link_examples]
 - [simplest example][link_simplest-example]
 
-## Auth Routes
+## Generated Routes
 
 - `GET` /auth
 - `GET` /auth/me
