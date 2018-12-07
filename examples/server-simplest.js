@@ -28,7 +28,8 @@ app.get('/', (req, res) => res.send('Hello World!'));
 // authenticate a route
 app.get('/secret/route', authenticate, (req, res) => res.json('this is private'));
 
-// const server = app.listen(port, () =>
-//   console.log(`Example app listening on port ${port}!`))
+const server = app.listen(port, () =>
+  console.log(`Example app listening on port ${port}!`))
 
-module.exports = _port => app.listen(_port);
+// For testing purposes...
+// module.exports = _port => app.listen(_port);
