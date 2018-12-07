@@ -17,10 +17,6 @@ npm install jsonwebtoken body-parser cookie-parser cookie-session
 npm install express-auth-jwt jsonwebtoken body-parser cookie-parser cookie-session
 ```
 
-## Contributors
-
-- George <mailto:7jagjag@gmail.com>
-
 ## Example
 [see examples][link_examples]
 - [simplest example][link_simplest-example]
@@ -48,6 +44,10 @@ const config = {
 
 ......expressAuthJWT(config)
 ```
+
+## Contributors
+
+- George <mailto:7jagjag@gmail.com>
 
 [link_examples]:https://github.com/g3org3/express-auth-jwt/blob/master/examples
 [link_simplest-example]:https://github.com/g3org3/express-auth-jwt/blob/master/examples/server-simplest.js
