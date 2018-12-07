@@ -25,14 +25,16 @@ npm install express-auth-jwt jsonwebtoken body-parser cookie-parser cookie-sessi
 [see examples][link_examples]
 - [simplest example][link_simplest-example]
 
-## Generated Routes
+## Generated Endpoints
 
-- `GET /auth`
-- `GET /auth/me`
-- `GET /auth/logout`
+| Method | Endpoint        | Body Params         | Description
+|--------|-----------------|---------------------|-------------------------
+| GET    | `/auth`         | -                   | simple check to verify the setup was succesful
+| GET    | `/auth/me`      | -                   | returns the user's profile
+| GET    | `/auth/logout`  | -                   | removes the session
+| POST   | `/auth/token`   | `{ _id, password }` | to request a new JWT token and creates the session 
+
 - `GET /auth/login?token=JWT`
-- `POST /auth/token `
-  - body: ` { _id, password } `
 
 ## FAQs
 ```js
